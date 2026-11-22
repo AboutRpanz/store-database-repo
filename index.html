@@ -297,12 +297,21 @@
     }
 
     .muted { color: var(--text-muted); font-size: 0.84rem; }
+    .notice-lock {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      color: var(--blue-900);
+      font-size: 0.78rem;
+    }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <span>STORE BIRU PUTIH</span>
+      <span id="brandStoreName">STORE BIRU PUTIH</span>
       <span id="roleBadge" class="badge">GUEST</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -319,6 +328,18 @@
         <div class="stat-label">Transaksi Sukses</div>
       </div>
       <div class="stat-box">
+        <div id="statAntiScamSent" class="stat-val">100%</div>
+        <div class="stat-label">Anti-Scam</div>
+      </div>
+      <div class="stat-box">
+        <div id="statProsesMenit" class="stat-val">&lt; 5 Menit</div>
+        <div class="stat-label">Waktu Proses</div>
+      </div>
+      <div class="stat-box">
+        <div id="statSatisfaticPersen" class="stat-val">99.8%</div>
+        <div class="stat-label">Kepuasan Pembeli</div>
+      </div>
+      <div class="stat-box">
         <div id="statReadyCount" class="stat-val">0</div>
         <div class="stat-label">Akun Ready</div>
       </div>
@@ -329,6 +350,12 @@
       <div class="stat-box">
         <div id="statOrdersCount" class="stat-val">0</div>
         <div class="stat-label">Total Riwayat Order</div>
+      </div>
+      <div class="stat-box">
+        <a id="statAdminPhoneLink" href="https://wa.me/62882006912453" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+          <div id="statAdminPhone" class="stat-val" style="font-size:1.05rem;">62882006912453</div>
+        </a>
+        <div class="stat-label">Nomor Admin (WA)</div>
       </div>
     </div>
 
@@ -350,30 +377,33 @@
     <section id="view-admin" class="card">
       <h2 style="color:var(--blue-900);font-size:1.1rem;margin-bottom:6px;">Panel Admin — Kelola Produk, Transaksi Sukses & Repo GitHub</h2>
       <p class="muted" style="margin-bottom:12px;">
-        Tambah/ubah/hapus produk, tambah transaksi sukses (otomatis menaikkan jumlah transaksi sukses & mengubah produk menjadi <b>SOLD</b>), serta sinkronkan ke repo GitHub memakai Access Token.
+        Akun admin hanya ada 1 (<code>admin@store.com</code>) dan tidak bisa membuat akun admin baru. Pendaftaran akun baru otomatis menjadi <b>Member</b>.
       </p>
 
       <div id="adminLoginBox" style="background:var(--bg-soft);padding:12px;border-radius:12px;margin-bottom:14px;">
-        <b>Akses Admin / Member</b>
+        <b>Akses Admin (1 Akun Tunggal) / Member</b>
         <div class="form-grid">
           <div>
             <label>Email</label>
-            <input id="loginEmail" type="email" placeholder="admin@store.com atau member@store.com" />
+            <input id="loginEmail" type="email" placeholder="admin@store.com atau email member" />
           </div>
           <div>
-            <label>Nama (untuk daftar baru)</label>
+            <label>Nama (untuk daftar akun member baru)</label>
             <input id="loginName" type="text" placeholder="Nama lengkap" />
           </div>
           <div>
-            <label>Role</label>
-            <select id="loginRole">
-              <option value="admin">Admin</option>
-              <option value="member">Member</option>
+            <label>Role Akun</label>
+            <select id="loginRole" disabled>
+              <option value="member">Member (Otomatis untuk akun baru)</option>
+              <option value="admin">Admin Tunggal (admin@store.com)</option>
             </select>
           </div>
         </div>
+        <div class="notice-lock">
+          Pembatasan Aktif: Hanya <b>1 akun admin</b> (<code>admin@store.com</code>) yang diizinkan. Registrasi email lain tidak bisa menjadi admin.
+        </div>
         <div class="row-actions">
-          <button type="button" class="btn btn-sm" onclick="handleLoginOrRegister()">Masuk / Simpan Akun</button>
+          <button type="button" class="btn btn-sm" onclick="handleLoginOrRegister()">Masuk / Daftar Member</button>
           <button type="button" class="btn btn-sm btn-outline" onclick="handleLogout()">Logout</button>
         </div>
       </div>
@@ -500,7 +530,7 @@
       </div>
       <div style="margin-top:10px;">
         <label>GitHub Personal Access Token (Contents: Read & Write)</label>
-        <input id="ghToken" type="password" placeholder="ghp_... atau github_pat_..." />
+        <input id="ghToken" type="password" placeholder="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" />
       </div>
       <label style="display:flex;align-items:center;gap:6px;margin-top:10px;cursor:pointer;">
         <input id="ghAutoSync" type="checkbox" checked style="width:auto;" />
@@ -531,6 +561,10 @@
       pushFileToGitHub,
       pushAllDatabaseToGitHub
     } from "./github-sync.js";
+
+    const SINGLE_ADMIN_EMAIL = "admin@store.com";
+    const SINGLE_ADMIN_ID = "USR-ADMIN-001";
+    const SINGLE_ADMIN_NAME = "Admin Utama Store";
 
     const KEYS = {
       products: "mc_bw_products",
@@ -581,33 +615,85 @@
         }
       ],
       users: [
-        { id: "USR-ADMIN-001", name: "Admin Utama Store", email: "admin@store.com", role: "admin" },
+        { id: SINGLE_ADMIN_ID, name: SINGLE_ADMIN_NAME, email: SINGLE_ADMIN_EMAIL, role: "admin" },
         { id: "USR-MEMBER-001", name: "Member Store", email: "member@store.com", role: "member" }
       ],
       session: { active: false, role: "guest", name: null, email: null },
-      store_meta: { baseSuccessTransactions: 18500 }
+      store_meta: {
+        storeName: "Store Resmi",
+        baseSuccessTransactions: 18500,
+        antiScamPercent: 100,
+        processMinutes: "< 5 Menit",
+        satisfactionPercent: 99.8,
+        adminWhatsapp: "62882006912453",
+        updatedAt: "2026-11-22T20:36:00+07:00",
+        singleAdminEmail: SINGLE_ADMIN_EMAIL
+      }
     };
 
     let currentStatusFilter = "all";
 
+    function enforceSingleAdminList(usersList) {
+      const list = Array.isArray(usersList) ? [...usersList] : [];
+      let adminAssigned = false;
+
+      const normalized = list.map((u) => {
+        const emailLower = String(u.email || "").trim().toLowerCase();
+        if (emailLower === SINGLE_ADMIN_EMAIL && !adminAssigned) {
+          adminAssigned = true;
+          return {
+            ...u,
+            id: SINGLE_ADMIN_ID,
+            name: u.name || SINGLE_ADMIN_NAME,
+            email: SINGLE_ADMIN_EMAIL,
+            role: "admin"
+          };
+        }
+        return {
+          ...u,
+          role: "member"
+        };
+      });
+
+      if (!adminAssigned) {
+        normalized.unshift({
+          id: SINGLE_ADMIN_ID,
+          name: SINGLE_ADMIN_NAME,
+          email: SINGLE_ADMIN_EMAIL,
+          role: "admin"
+        });
+      }
+
+      return normalized;
+    }
+
     function initLocalSeed() {
       Object.entries(SEED).forEach(([k, val]) => {
         if (!localStorage.getItem(KEYS[k])) {
-          localStorage.setItem(KEYS[k], JSON.stringify(val));
+          const finalVal = k === "users" ? enforceSingleAdminList(val) : val;
+          localStorage.setItem(KEYS[k], JSON.stringify(finalVal));
+        } else if (k === "users") {
+          try {
+            const currentUsers = JSON.parse(localStorage.getItem(KEYS.users));
+            localStorage.setItem(KEYS.users, JSON.stringify(enforceSingleAdminList(currentUsers)));
+          } catch {}
         }
       });
     }
 
     function readKey(k) {
       try {
-        return JSON.parse(localStorage.getItem(KEYS[k]));
+        const parsed = JSON.parse(localStorage.getItem(KEYS[k]));
+        if (k === "users") return enforceSingleAdminList(parsed);
+        return parsed;
       } catch {
         return SEED[k];
       }
     }
 
     function writeKey(k, val) {
-      localStorage.setItem(KEYS[k], JSON.stringify(val));
+      const finalVal = k === "users" ? enforceSingleAdminList(val) : val;
+      localStorage.setItem(KEYS[k], JSON.stringify(finalVal));
     }
 
     function formatRp(n) {
@@ -638,18 +724,51 @@
       const products = readKey("products") || [];
       const orders = readKey("orders") || [];
       const session = readKey("session") || { active: false, role: "guest" };
-      const meta = readKey("store_meta") || { baseSuccessTransactions: 18500 };
+      const meta = readKey("store_meta") || {};
+      window.STORE_META = meta;
 
+      const storeName = meta.storeName || meta.storename || "Store Resmi";
+      document.getElementById("brandStoreName").textContent = storeName;
+      document.title = `${storeName} — Akun Game & Rekber + GitHub Token Sync`;
+
+      const baseTrx = Number(meta.baseSuccessTransactions ?? meta.transaksisukses ?? 18500) || 0;
       const successOrdersCount = orders.filter((o) => o.status === "sukses").length;
-      const totalSuccess = (Number(meta.baseSuccessTransactions) || 18500) + successOrdersCount;
+      const totalSuccess = baseTrx + successOrdersCount;
+
+      const antiScamVal = meta.antiScamPercent ?? meta.antiscampersent ?? 100;
+      const antiScamText = typeof antiScamVal === "string"
+        ? antiScamVal
+        : `${Number(antiScamVal).toLocaleString("id-ID")}%`;
+
+      const processVal = meta.processMinutes ?? meta.prosesmenit ?? "< 5 Menit";
+      const processText = typeof processVal === "number" ? `${processVal} Menit` : String(processVal);
+
+      const satisfactionVal = meta.satisfactionPercent ?? meta.satisfaticpersen ?? 99.8;
+      const satisfactionText = typeof satisfactionVal === "string"
+        ? satisfactionVal
+        : `${String(satisfactionVal).replace(".", ",")}%`;
+
+      const adminWhatsapp = String(
+        meta.adminWhatsapp || meta.adminPhone || meta.nomorAdmin || meta.nomor_admin || "62882006912453"
+      ).replace(/[^0-9]/g, "") || "62882006912453";
 
       document.getElementById("statSuccessTrx").textContent = totalSuccess.toLocaleString("id-ID") + "+";
+      document.getElementById("statAntiScamSent").textContent = antiScamText;
+      document.getElementById("statProsesMenit").textContent = processText;
+      document.getElementById("statSatisfaticPersen").textContent = satisfactionText;
+      document.getElementById("statAdminPhone").textContent = adminWhatsapp;
+      const waLinkEl = document.getElementById("statAdminPhoneLink");
+      if (waLinkEl) waLinkEl.href = `https://wa.me/${adminWhatsapp}`;
       document.getElementById("statReadyCount").textContent = String(products.filter((p) => p.status !== "sold").length);
       document.getElementById("statSoldCount").textContent = String(products.filter((p) => p.status === "sold").length);
       document.getElementById("statOrdersCount").textContent = String(orders.length);
 
       const roleBadge = document.getElementById("roleBadge");
       roleBadge.textContent = session.active ? `${session.role.toUpperCase()} • ${session.name}` : "GUEST";
+
+      const emailInputVal = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const roleSelect = document.getElementById("loginRole");
+      roleSelect.value = emailInputVal === SINGLE_ADMIN_EMAIL ? "admin" : "member";
 
       const filtered = products.filter((p) => {
         if (currentStatusFilter === "ready") return p.status !== "sold";
@@ -705,6 +824,11 @@
 
       updateTokenBadge();
     }
+
+    document.getElementById("loginEmail").addEventListener("input", () => {
+      const val = document.getElementById("loginEmail").value.trim().toLowerCase();
+      document.getElementById("loginRole").value = val === SINGLE_ADMIN_EMAIL ? "admin" : "member";
+    });
 
     window.setFilterStatus = (status) => {
       currentStatusFilter = status;
@@ -873,26 +997,34 @@
 
     window.handleLoginOrRegister = async () => {
       const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const name = document.getElementById("loginName").value.trim() || (email ? email.split("@")[0] : "Pengguna");
-      const role = document.getElementById("loginRole").value;
+      const nameInput = document.getElementById("loginName").value.trim();
       if (!email) {
         alert("Masukkan email terlebih dahulu.");
         return;
       }
 
-      const users = readKey("users") || [];
-      let user = users.find((u) => u.email.toLowerCase() === email);
+      const isSingleAdmin = email === SINGLE_ADMIN_EMAIL;
+      const role = isSingleAdmin ? "admin" : "member";
+      const name = nameInput || (isSingleAdmin ? SINGLE_ADMIN_NAME : email.split("@")[0]);
+
+      const users = enforceSingleAdminList(readKey("users") || []);
+      let user = users.find((u) => String(u.email || "").toLowerCase() === email);
+
       if (!user) {
         user = {
           id: "USR-" + Date.now().toString().slice(-6),
           name,
           email,
-          role,
+          role: "member",
           createdAt: new Date().toISOString()
         };
         users.push(user);
-        writeKey("users", users);
+      } else {
+        user.role = isSingleAdmin ? "admin" : "member";
+        if (nameInput) user.name = nameInput;
       }
+
+      writeKey("users", users);
 
       const session = {
         active: true,
@@ -905,7 +1037,7 @@
       writeKey("session", session);
       renderAll();
       try {
-        await syncKeysToGitHub(["users", "session"], `Login/registrasi ${user.email}`);
+        await syncKeysToGitHub(["users", "session"], `Login/registrasi ${user.email} (${user.role})`);
       } catch {}
     };
 
