@@ -1,0 +1,94 @@
+[
+  {
+    "id": "MC-FR-01136A",
+    "title": "FF DANA PELAJAR",
+    "game": "Free Fire",
+    "tag": "BUDGET PELAJAR",
+    "price": 420000,
+    "strikePrice": 850000,
+    "safeScore": 98,
+    "rank": "Master",
+    "level": 70,
+    "bind": "Login Google (Aman)",
+    "seller": "Store Didin Store - Partner PT",
+    "sellerBadge": "PT (PARTNER)",
+    "uploadedAt": "2026-11-19",
+    "notes": "max 4",
+    "description": "Akun aman terawat siap pakai dengan bundle pelajar pilihan dan riwayat login bersih.",
+    "images": [
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+    ],
+    "status": "ready",
+    "soldAt": null,
+    "soldOrderId": null
+  },
+  {
+    "id": "MC-FR-0BFD06",
+    "title": "FF DANA PELAJAR",
+    "game": "Free Fire",
+    "tag": "BUDGET PELAJAR",
+    "price": 350000,
+    "strikePrice": 850000,
+    "safeScore": 98,
+    "rank": "Diamond",
+    "level": 65,
+    "bind": "Login Google (Aman)",
+    "seller": "Store Didin Store - Partner PT",
+    "sellerBadge": "PT (PARTNER)",
+    "uploadedAt": "2026-11-19",
+    "notes": "polosan opm",
+    "description": "Akun polosan aman, siap ganti data sesuai prosedur rekber resmi.",
+    "images": [
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
+    ],
+    "status": "ready",
+    "soldAt": null,
+    "soldOrderId": null
+  },
+  {
+    "id": "MC-FR-FEF317",
+    "title": "FF DANA PELAJAR",
+    "game": "Free Fire",
+    "tag": "BUDGET PELAJAR",
+    "price": 390000,
+    "strikePrice": 750000,
+    "safeScore": 98,
+    "rank": "Heroic",
+    "level": 68,
+    "bind": "Login Google (Aman)",
+    "seller": "Store Didin Store - Partner PT",
+    "sellerBadge": "PT (PARTNER)",
+    "uploadedAt": "2026-11-19",
+    "notes": "ready bundle",
+    "description": "Akun siap pakai dengan catatan aman dan transaksi dikawal admin rekber.",
+    "images": [
+      "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=900&q=80"
+    ],
+    "status": "sold",
+    "soldAt": "2026-11-22T18:10:00+07:00",
+    "soldOrderId": "TRX-20261122-001"
+  },
+  {
+    "id": "MC-MO-8C6D3C",
+    "title": "AKUN ML SULTAN",
+    "game": "Mobile Legends",
+    "tag": "AKUN SULTAN",
+    "price": 1250000,
+    "strikePrice": 2100000,
+    "safeScore": 99,
+    "rank": "GLORY",
+    "level": 85,
+    "bind": "Monsep (Moonton Aman)",
+    "seller": "Store TAA STORE - Partner PT",
+    "sellerBadge": "PT (PARTNER)",
+    "uploadedAt": "2026-11-20",
+    "notes": "koleksi skin",
+    "description": "Akun Mobile Legends rank Glory dengan koleksi skin dan bind aman.",
+    "images": [
+      "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=900&q=80"
+    ],
+    "status": "ready",
+    "soldAt": null,
+    "soldOrderId": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "USR-ADMIN-001",
+    "name": "Admin Utama Store",
+    "email": "admin@store.com",
+    "whatsapp": "0882006912453",
+    "role": "admin",
+    "createdAt": "2026-11-01T00:00:00+07:00"
+  },
+  {
+    "id": "USR-MEMBER-001",
+    "name": "Member Store",
+    "email": "member@store.com",
+    "whatsapp": "081200001111",
+    "role": "member",
+    "createdAt": "2026-11-10T08:00:00+07:00"
+  }
+]

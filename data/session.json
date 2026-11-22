@@ -1,0 +1,9 @@
+{
+  "active": false,
+  "userId": null,
+  "name": null,
+  "email": null,
+  "role": "guest",
+  "storageKey": "mc_bw_session",
+  "updatedAt": "2026-11-22T20:36:00+07:00"
+}
