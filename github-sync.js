@@ -13,7 +13,7 @@ const DEFAULT_GH_CONFIG = {
   repo: "store-database-repo",
   branch: "main",
   dataPath: "data",
-  token: "",
+  token: "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",
   autoSyncOnAdminAction: true
 };
 
