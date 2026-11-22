@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Store Akun Game & Rekber — Biru Putih + GitHub Token Sync</title>
+  <style>
+    :root {
+      --bg-page: #f0f6ff;
+      --bg-card: #ffffff;
+      --bg-soft: #e6f0ff;
+      --blue-900: #0c2d6b;
+      --blue-700: #155eef;
+      --blue-600: #1d4ed8;
+      --blue-500: #2563eb;
+      --blue-100: #dbeafe;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #bfdbfe;
+      --danger: #dc2626;
+      --success: #059669;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      padding-bottom: 84px;
+      line-height: 1.5;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(90deg, var(--blue-900), var(--blue-700));
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(12, 45, 107, 0.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--blue-100);
+      color: var(--blue-900);
+    }
+
+    .badge-ok { background: #d1fae5; color: #065f46; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(29, 78, 216, 0.06);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .stat-val {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--blue-700);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-image-box {
+      position: relative;
+      height: 170px;
+      background: var(--bg-soft);
+      overflow: hidden;
+    }
+
+    .product-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-image-box img.is-sold {
+      filter: grayscale(50%) brightness(0.58);
+    }
+
+    .sold-center-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .sold-center-stamp {
+      padding: 8px 22px;
+      border: 3.5px solid #ffffff;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.94);
+      color: #ffffff;
+      font-size: 1.85rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transform: rotate(-10deg);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .product-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--blue-700);
+    }
+
+    .strike {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--blue-600);
+      color: #ffffff;
+    }
+
+    .btn:hover { background: var(--blue-700); }
+    .btn-outline {
+      background: #ffffff;
+      color: var(--blue-700);
+      border-color: var(--blue-500);
+    }
+    .btn-success { background: var(--success); color: #ffffff; }
+    .btn-danger { background: var(--danger); color: #ffffff; }
+    .btn-sm { padding: 6px 10px; font-size: 0.78rem; }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #93c5fd;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      background: #ffffff;
+      color: var(--text-main);
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--blue-900);
+      margin-bottom: 4px;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 45;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 4px;
+    }
+
+    .nav-item {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 6px 2px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      background: var(--blue-100);
+      color: var(--blue-700);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .muted { color: var(--text-muted); font-size: 0.84rem; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span>STORE BIRU PUTIH</span>
+      <span id="roleBadge" class="badge">GUEST</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span id="ghSyncStatus" class="badge badge-warn">Token Belum Diset</span>
+      <button type="button" class="btn btn-sm btn-outline" onclick="openTokenModal()">GitHub Token</button>
+      <button type="button" class="btn btn-sm btn-outline" onclick="pullFromGitHubNow()">Pull Repo</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div id="statSuccessTrx" class="stat-val">18.500+</div>
+        <div class="stat-label">Transaksi Sukses</div>
+      </div>
+      <div class="stat-box">
+        <div id="statReadyCount" class="stat-val">0</div>
+        <div class="stat-label">Akun Ready</div>
+      </div>
+      <div class="stat-box">
+        <div id="statSoldCount" class="stat-val">0</div>
+        <div class="stat-label">Akun SOLD</div>
+      </div>
+      <div class="stat-box">
+        <div id="statOrdersCount" class="stat-val">0</div>
+        <div class="stat-label">Total Riwayat Order</div>
+      </div>
+    </div>
+
+    <section id="view-products" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <div>
+          <h2 style="color:var(--blue-900);font-size:1.1rem;">Katalog Akun & Status SOLD</h2>
+          <p class="muted">Produk yang ditandai terjual otomatis menampilkan tulisan <b>SOLD</b> besar di tengah gambar.</p>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" onclick="setFilterStatus('all')">Semua</button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="setFilterStatus('ready')">Ready</button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="setFilterStatus('sold')">SOLD</button>
+        </div>
+      </div>
+      <div id="productsGrid" class="products-grid"></div>
+    </section>
+
+    <section id="view-admin" class="card">
+      <h2 style="color:var(--blue-900);font-size:1.1rem;margin-bottom:6px;">Panel Admin — Kelola Produk, Transaksi Sukses & Repo GitHub</h2>
+      <p class="muted" style="margin-bottom:12px;">
+        Tambah/ubah/hapus produk, tambah transaksi sukses (otomatis menaikkan jumlah transaksi sukses & mengubah produk menjadi <b>SOLD</b>), serta sinkronkan ke repo GitHub memakai Access Token.
+      </p>
+
+      <div id="adminLoginBox" style="background:var(--bg-soft);padding:12px;border-radius:12px;margin-bottom:14px;">
+        <b>Akses Admin / Member</b>
+        <div class="form-grid">
+          <div>
+            <label>Email</label>
+            <input id="loginEmail" type="email" placeholder="admin@store.com atau member@store.com" />
+          </div>
+          <div>
+            <label>Nama (untuk daftar baru)</label>
+            <input id="loginName" type="text" placeholder="Nama lengkap" />
+          </div>
+          <div>
+            <label>Role</label>
+            <select id="loginRole">
+              <option value="admin">Admin</option>
+              <option value="member">Member</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button type="button" class="btn btn-sm" onclick="handleLoginOrRegister()">Masuk / Simpan Akun</button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="handleLogout()">Logout</button>
+        </div>
+      </div>
+
+      <div id="adminWorkspace">
+        <div class="card" style="background:#f8fbff;">
+          <h3 id="productFormTitle" style="color:var(--blue-700);font-size:1rem;">Tambah Produk Baru</h3>
+          <input type="hidden" id="editProductId" />
+          <div class="form-grid">
+            <div>
+              <label>ID Produk</label>
+              <input id="prodId" type="text" placeholder="Contoh: MC-FR-9910A" />
+            </div>
+            <div>
+              <label>Judul Akun</label>
+              <input id="prodTitle" type="text" placeholder="Contoh: FF SG2 UNGU + S2" />
+            </div>
+            <div>
+              <label>Game</label>
+              <select id="prodGame">
+                <option value="Free Fire">Free Fire</option>
+                <option value="Mobile Legends">Mobile Legends</option>
+                <option value="PUBG Mobile">PUBG Mobile</option>
+                <option value="Roblox">Roblox</option>
+              </select>
+            </div>
+            <div>
+              <label>Harga Bersih (Rp)</label>
+              <input id="prodPrice" type="number" placeholder="450000" />
+            </div>
+            <div>
+              <label>Harga Coret (Rp)</label>
+              <input id="prodStrike" type="number" placeholder="800000" />
+            </div>
+            <div>
+              <label>Status Produk</label>
+              <select id="prodStatus">
+                <option value="ready">ready</option>
+                <option value="sold">sold</option>
+              </select>
+            </div>
+            <div>
+              <label>URL Gambar Produk</label>
+              <input id="prodImage" type="url" placeholder="https://..." />
+            </div>
+            <div>
+              <label>Catatan Singkat</label>
+              <input id="prodNotes" type="text" placeholder="Siap rekber / bind aman" />
+            </div>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="btn btn-sm" onclick="saveProductForm()">Simpan Produk & Sync Repo</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="resetProductForm()">Reset Form</button>
+          </div>
+        </div>
+
+        <div class="card" style="background:#f8fbff;">
+          <h3 style="color:var(--blue-700);font-size:1rem;">Tambah Transaksi Sukses</h3>
+          <p class="muted">Menambah transaksi sukses akan mencatat order berstatus <b>sukses</b>, menambah total transaksi sukses, dan (jika dicentang) mengubah produk menjadi <b>SOLD</b>.</p>
+          <div class="form-grid">
+            <div>
+              <label>Pilih Produk</label>
+              <select id="trxProductSelect" onchange="syncTrxPriceFromProduct()"></select>
+            </div>
+            <div>
+              <label>Nama Pembeli</label>
+              <input id="trxBuyerName" type="text" placeholder="Nama pembeli" />
+            </div>
+            <div>
+              <label>No. WhatsApp Pembeli</label>
+              <input id="trxBuyerWa" type="text" placeholder="0812xxxxxxxx" />
+            </div>
+            <div>
+              <label>Nominal Transaksi (Rp)</label>
+              <input id="trxPrice" type="number" placeholder="420000" />
+            </div>
+            <div>
+              <label>Catatan Transaksi</label>
+              <input id="trxNotes" type="text" placeholder="Selesai via rekber admin" />
+            </div>
+            <div style="display:flex;align-items:flex-end;padding-bottom:6px;">
+              <label style="display:flex;align-items:center;gap:6px;margin:0;cursor:pointer;">
+                <input id="trxMarkSold" type="checkbox" checked style="width:auto;" />
+                <span>Ubah produk menjadi SOLD</span>
+              </label>
+            </div>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="btn btn-sm btn-success" onclick="addSuccessTransaction()">Simpan Transaksi Sukses & Sync Repo</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color:var(--blue-900);font-size:1rem;margin-bottom:8px;">Riwayat Transaksi / Orders</h3>
+          <div id="ordersList" class="muted">Memuat riwayat order...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="tokenModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3 style="color:var(--blue-900);margin-bottom:6px;">Konfigurasi GitHub Access Token</h3>
+      <p class="muted" style="margin-bottom:12px;">
+        Digunakan untuk membaca & menulis (<code>PUT</code>) file JSON di folder <code>data/</code> pada repository GitHub secara langsung.
+      </p>
+      <div class="form-grid">
+        <div>
+          <label>GitHub Username / Owner</label>
+          <input id="ghOwner" type="text" placeholder="AboutRpanz" />
+        </div>
+        <div>
+          <label>Repository Name</label>
+          <input id="ghRepo" type="text" placeholder="store-database-repo" />
+        </div>
+        <div>
+          <label>Branch</label>
+          <input id="ghBranch" type="text" placeholder="main" />
+        </div>
+        <div>
+          <label>Data Folder Path</label>
+          <input id="ghDataPath" type="text" placeholder="data" />
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <label>GitHub Personal Access Token (Contents: Read & Write)</label>
+        <input id="ghToken" type="password" placeholder="ghp_... atau github_pat_..." />
+      </div>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:10px;cursor:pointer;">
+        <input id="ghAutoSync" type="checkbox" checked style="width:auto;" />
+        <span>Otomatis commit ke GitHub setiap tambah/ubah/hapus data</span>
+      </label>
+      <div class="row-actions" style="margin-top:14px;">
+        <button type="button" class="btn btn-sm" onclick="saveTokenSettings()">Simpan Konfigurasi</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="pushAllNow()">Push Semua DB ke GitHub</button>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeTokenModal()">Tutup</button>
+      </div>
+      <p id="ghModalMsg" class="muted" style="margin-top:10px;"></p>
+    </div>
+  </div>
+
+  <nav class="bottom-bar">
+    <button type="button" class="nav-item active" onclick="scrollToSection('view-products', this)">Beranda</button>
+    <button type="button" class="nav-item" onclick="scrollToSection('view-products', this)">Produk</button>
+    <button type="button" class="nav-item" onclick="scrollToSection('view-admin', this)">Analisis</button>
+    <button type="button" class="nav-item" onclick="scrollToSection('view-admin', this)">Grup Stok</button>
+    <button type="button" class="nav-item" onclick="scrollToSection('view-admin', this)">Masuk / Akun</button>
+  </nav>
+
+  <script type="module">
+    import {
+      getGitHubConfig,
+      saveGitHubConfig,
+      pullDatabaseFromGitHub,
+      pushFileToGitHub,
+      pushAllDatabaseToGitHub
+    } from "./github-sync.js";
+
+    const KEYS = {
+      products: "mc_bw_products",
+      titip_jual: "mc_bw_titip_jual",
+      orders: "mc_bw_orders",
+      users: "mc_bw_users",
+      session: "mc_bw_session",
+      store_meta: "mc_bw_store_meta"
+    };
+
+    const SEED = {
+      products: [
+        {
+          id: "MC-FR-01136A",
+          title: "FF DANA PELAJAR",
+          game: "Free Fire",
+          tag: "BUDGET PELAJAR",
+          price: 420000,
+          strikePrice: 850000,
+          notes: "max 4",
+          images: ["https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"],
+          status: "ready"
+        },
+        {
+          id: "MC-FR-FEF317",
+          title: "FF DANA PELAJAR",
+          game: "Free Fire",
+          tag: "BUDGET PELAJAR",
+          price: 390000,
+          strikePrice: 750000,
+          notes: "sudah terjual via rekber",
+          images: ["https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=900&q=80"],
+          status: "sold"
+        }
+      ],
+      titip_jual: [],
+      orders: [
+        {
+          orderId: "TRX-20261122-001",
+          productId: "MC-FR-FEF317",
+          productTitle: "FF DANA PELAJAR",
+          game: "Free Fire",
+          price: 390000,
+          buyerName: "Dimas Saputra",
+          buyerWhatsapp: "081988776655",
+          status: "sukses",
+          createdAt: "2026-11-22T18:10:00+07:00"
+        }
+      ],
+      users: [
+        { id: "USR-ADMIN-001", name: "Admin Utama Store", email: "admin@store.com", role: "admin" },
+        { id: "USR-MEMBER-001", name: "Member Store", email: "member@store.com", role: "member" }
+      ],
+      session: { active: false, role: "guest", name: null, email: null },
+      store_meta: { baseSuccessTransactions: 18500 }
+    };
+
+    let currentStatusFilter = "all";
+
+    function initLocalSeed() {
+      Object.entries(SEED).forEach(([k, val]) => {
+        if (!localStorage.getItem(KEYS[k])) {
+          localStorage.setItem(KEYS[k], JSON.stringify(val));
+        }
+      });
+    }
+
+    function readKey(k) {
+      try {
+        return JSON.parse(localStorage.getItem(KEYS[k]));
+      } catch {
+        return SEED[k];
+      }
+    }
+
+    function writeKey(k, val) {
+      localStorage.setItem(KEYS[k], JSON.stringify(val));
+    }
+
+    function formatRp(n) {
+      return "Rp " + Number(n || 0).toLocaleString("id-ID");
+    }
+
+    async function syncKeysToGitHub(fileKeys, reason) {
+      const cfg = getGitHubConfig();
+      if (!cfg.autoSyncOnAdminAction || !cfg.token) return;
+      for (const k of fileKeys) {
+        await pushFileToGitHub(k, readKey(k), `${reason} (${k}.json)`, cfg);
+      }
+    }
+
+    function updateTokenBadge() {
+      const cfg = getGitHubConfig();
+      const el = document.getElementById("ghSyncStatus");
+      if (cfg.token) {
+        el.textContent = `Token Aktif (${cfg.owner}/${cfg.repo})`;
+        el.className = "badge badge-ok";
+      } else {
+        el.textContent = "Token Belum Diset";
+        el.className = "badge badge-warn";
+      }
+    }
+
+    function renderAll() {
+      const products = readKey("products") || [];
+      const orders = readKey("orders") || [];
+      const session = readKey("session") || { active: false, role: "guest" };
+      const meta = readKey("store_meta") || { baseSuccessTransactions: 18500 };
+
+      const successOrdersCount = orders.filter((o) => o.status === "sukses").length;
+      const totalSuccess = (Number(meta.baseSuccessTransactions) || 18500) + successOrdersCount;
+
+      document.getElementById("statSuccessTrx").textContent = totalSuccess.toLocaleString("id-ID") + "+";
+      document.getElementById("statReadyCount").textContent = String(products.filter((p) => p.status !== "sold").length);
+      document.getElementById("statSoldCount").textContent = String(products.filter((p) => p.status === "sold").length);
+      document.getElementById("statOrdersCount").textContent = String(orders.length);
+
+      const roleBadge = document.getElementById("roleBadge");
+      roleBadge.textContent = session.active ? `${session.role.toUpperCase()} • ${session.name}` : "GUEST";
+
+      const filtered = products.filter((p) => {
+        if (currentStatusFilter === "ready") return p.status !== "sold";
+        if (currentStatusFilter === "sold") return p.status === "sold";
+        return true;
+      });
+
+      const grid = document.getElementById("productsGrid");
+      grid.innerHTML = filtered.map((p) => {
+        const isSold = p.status === "sold";
+        const imgUrl = (p.images && p.images[0]) || "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80";
+        return `
+          <div class="product-card">
+            <div class="product-image-box">
+              <img src="${imgUrl}" alt="${p.title}" class="${isSold ? "is-sold" : ""}" />
+              ${isSold ? `<div class="sold-center-overlay"><div class="sold-center-stamp">SOLD</div></div>` : ""}
+            </div>
+            <div class="product-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                <span class="badge">${p.game}</span>
+                <span class="badge ${isSold ? "badge-warn" : "badge-ok"}">${isSold ? "SOLD" : "READY"}</span>
+              </div>
+              <div style="font-weight:800;color:var(--blue-900);">${p.title}</div>
+              <div class="muted">ID: ${p.id} • ${p.notes || "-"}</div>
+              <div>
+                <span class="price">${formatRp(p.price)}</span>
+                ${p.strikePrice ? `<span class="strike">${formatRp(p.strikePrice)}</span>` : ""}
+              </div>
+              <div class="row-actions">
+                <button type="button" class="btn btn-sm" onclick="editProductById('${p.id}')">Ubah</button>
+                <button type="button" class="btn btn-sm ${isSold ? "btn-outline" : "btn-success"}" onclick="toggleProductSold('${p.id}')">
+                  ${isSold ? "Set Ready" : "Set SOLD"}
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="deleteProductById('${p.id}')">Hapus</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("") || `<p class="muted">Tidak ada produk pada filter ini.</p>`;
+
+      const select = document.getElementById("trxProductSelect");
+      select.innerHTML = products.map((p) =>
+        `<option value="${p.id}" data-price="${p.price}">${p.id} — ${p.title} (${p.status === "sold" ? "SOLD" : "READY"})</option>`
+      ).join("");
+      syncTrxPriceFromProduct();
+
+      const ordersEl = document.getElementById("ordersList");
+      ordersEl.innerHTML = orders.map((o) =>
+        `<div style="padding:8px 0;border-bottom:1px solid #e2e8f0;">
+          <b>${o.orderId}</b> • ${o.productTitle} • <b>${formatRp(o.price)}</b> • Pembeli: ${o.buyerName} (${o.buyerWhatsapp}) • Status: <span class="badge badge-ok">${o.status}</span>
+        </div>`
+      ).join("") || "Belum ada transaksi.";
+
+      updateTokenBadge();
+    }
+
+    window.setFilterStatus = (status) => {
+      currentStatusFilter = status;
+      renderAll();
+    };
+
+    window.syncTrxPriceFromProduct = () => {
+      const sel = document.getElementById("trxProductSelect");
+      const opt = sel.options[sel.selectedIndex];
+      if (opt && opt.dataset.price) {
+        document.getElementById("trxPrice").value = opt.dataset.price;
+      }
+    };
+
+    window.saveProductForm = async () => {
+      const products = readKey("products") || [];
+      const editingId = document.getElementById("editProductId").value.trim();
+      const id = (document.getElementById("prodId").value.trim() || ("MC-" + Date.now().toString().slice(-6))).toUpperCase();
+      const title = document.getElementById("prodTitle").value.trim() || "AKUN GAME";
+      const game = document.getElementById("prodGame").value;
+      const price = Number(document.getElementById("prodPrice").value || 0);
+      const strikePrice = Number(document.getElementById("prodStrike").value || 0) || null;
+      const status = document.getElementById("prodStatus").value === "sold" ? "sold" : "ready";
+      const imgUrl = document.getElementById("prodImage").value.trim() || "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80";
+      const notes = document.getElementById("prodNotes").value.trim();
+
+      const payload = {
+        id,
+        title,
+        game,
+        tag: price >= 1000000 ? "AKUN SULTAN" : "BUDGET PELAJAR",
+        price,
+        strikePrice,
+        notes,
+        images: [imgUrl],
+        status
+      };
+
+      const idx = products.findIndex((p) => p.id === (editingId || id));
+      if (idx >= 0) {
+        products[idx] = { ...products[idx], ...payload };
+      } else {
+        products.unshift(payload);
+      }
+
+      writeKey("products", products);
+      resetProductForm();
+      renderAll();
+      try {
+        await syncKeysToGitHub(["products"], `Simpan produk ${id}`);
+      } catch (err) {
+        alert("Tersimpan lokal, namun gagal push ke GitHub: " + err.message);
+      }
+    };
+
+    window.editProductById = (id) => {
+      const products = readKey("products") || [];
+      const p = products.find((item) => item.id === id);
+      if (!p) return;
+      document.getElementById("editProductId").value = p.id;
+      document.getElementById("prodId").value = p.id;
+      document.getElementById("prodTitle").value = p.title;
+      document.getElementById("prodGame").value = p.game;
+      document.getElementById("prodPrice").value = p.price;
+      document.getElementById("prodStrike").value = p.strikePrice || "";
+      document.getElementById("prodStatus").value = p.status === "sold" ? "sold" : "ready";
+      document.getElementById("prodImage").value = (p.images && p.images[0]) || "";
+      document.getElementById("prodNotes").value = p.notes || "";
+      document.getElementById("productFormTitle").textContent = "Ubah Produk: " + p.id;
+      document.getElementById("view-admin").scrollIntoView({ behavior: "smooth" });
+    };
+
+    window.resetProductForm = () => {
+      document.getElementById("editProductId").value = "";
+      document.getElementById("prodId").value = "";
+      document.getElementById("prodTitle").value = "";
+      document.getElementById("prodPrice").value = "";
+      document.getElementById("prodStrike").value = "";
+      document.getElementById("prodStatus").value = "ready";
+      document.getElementById("prodImage").value = "";
+      document.getElementById("prodNotes").value = "";
+      document.getElementById("productFormTitle").textContent = "Tambah Produk Baru";
+    };
+
+    window.toggleProductSold = async (id) => {
+      const products = readKey("products") || [];
+      const idx = products.findIndex((p) => p.id === id);
+      if (idx < 0) return;
+      const nextStatus = products[idx].status === "sold" ? "ready" : "sold";
+      products[idx].status = nextStatus;
+      products[idx].soldAt = nextStatus === "sold" ? new Date().toISOString() : null;
+      writeKey("products", products);
+      renderAll();
+      try {
+        await syncKeysToGitHub(["products"], `Ubah status ${id} menjadi ${nextStatus}`);
+      } catch (err) {
+        alert("Status berubah di web, gagal push GitHub: " + err.message);
+      }
+    };
+
+    window.deleteProductById = async (id) => {
+      const products = (readKey("products") || []).filter((p) => p.id !== id);
+      writeKey("products", products);
+      renderAll();
+      try {
+        await syncKeysToGitHub(["products"], `Hapus produk ${id}`);
+      } catch (err) {
+        alert("Produk dihapus di web, gagal push GitHub: " + err.message);
+      }
+    };
+
+    window.addSuccessTransaction = async () => {
+      const prodId = document.getElementById("trxProductSelect").value;
+      const buyerName = document.getElementById("trxBuyerName").value.trim() || "Pembeli";
+      const buyerWhatsapp = document.getElementById("trxBuyerWa").value.trim() || "-";
+      const price = Number(document.getElementById("trxPrice").value || 0);
+      const notes = document.getElementById("trxNotes").value.trim() || "Transaksi sukses diinput admin";
+      const markSold = document.getElementById("trxMarkSold").checked;
+
+      const products = readKey("products") || [];
+      const orders = readKey("orders") || [];
+      const orderId = "TRX-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.floor(100 + Math.random() * 900);
+
+      const prodIdx = products.findIndex((p) => p.id === prodId);
+      const targetProd = prodIdx >= 0 ? products[prodIdx] : null;
+
+      if (markSold && prodIdx >= 0) {
+        products[prodIdx] = {
+          ...products[prodIdx],
+          status: "sold",
+          soldAt: new Date().toISOString(),
+          soldOrderId: orderId
+        };
+        writeKey("products", products);
+      }
+
+      const newOrder = {
+        orderId,
+        productId: targetProd ? targetProd.id : null,
+        productTitle: targetProd ? targetProd.title : "Transaksi Manual Admin",
+        game: targetProd ? targetProd.game : "Umum",
+        price: price || (targetProd ? targetProd.price : 0),
+        buyerName,
+        buyerWhatsapp,
+        notes,
+        status: "sukses",
+        source: "admin_input",
+        markProductSold: markSold,
+        createdAt: new Date().toISOString()
+      };
+
+      orders.unshift(newOrder);
+      writeKey("orders", orders);
+
+      document.getElementById("trxBuyerName").value = "";
+      document.getElementById("trxBuyerWa").value = "";
+      document.getElementById("trxNotes").value = "";
+
+      renderAll();
+      try {
+        await syncKeysToGitHub(markSold ? ["orders", "products"] : ["orders"], `Tambah transaksi sukses ${orderId}`);
+      } catch (err) {
+        alert("Transaksi tersimpan di web, gagal push GitHub: " + err.message);
+      }
+    };
+
+    window.handleLoginOrRegister = async () => {
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const name = document.getElementById("loginName").value.trim() || (email ? email.split("@")[0] : "Pengguna");
+      const role = document.getElementById("loginRole").value;
+      if (!email) {
+        alert("Masukkan email terlebih dahulu.");
+        return;
+      }
+
+      const users = readKey("users") || [];
+      let user = users.find((u) => u.email.toLowerCase() === email);
+      if (!user) {
+        user = {
+          id: "USR-" + Date.now().toString().slice(-6),
+          name,
+          email,
+          role,
+          createdAt: new Date().toISOString()
+        };
+        users.push(user);
+        writeKey("users", users);
+      }
+
+      const session = {
+        active: true,
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        updatedAt: new Date().toISOString()
+      };
+      writeKey("session", session);
+      renderAll();
+      try {
+        await syncKeysToGitHub(["users", "session"], `Login/registrasi ${user.email}`);
+      } catch {}
+    };
+
+    window.handleLogout = async () => {
+      writeKey("session", { active: false, role: "guest", name: null, email: null, updatedAt: new Date().toISOString() });
+      renderAll();
+      try {
+        await syncKeysToGitHub(["session"], "Logout akun");
+      } catch {}
+    };
+
+    window.openTokenModal = () => {
+      const cfg = getGitHubConfig();
+      document.getElementById("ghOwner").value = cfg.owner;
+      document.getElementById("ghRepo").value = cfg.repo;
+      document.getElementById("ghBranch").value = cfg.branch;
+      document.getElementById("ghDataPath").value = cfg.dataPath;
+      document.getElementById("ghToken").value = cfg.token;
+      document.getElementById("ghAutoSync").checked = Boolean(cfg.autoSyncOnAdminAction);
+      document.getElementById("ghModalMsg").textContent = "";
+      document.getElementById("tokenModal").classList.add("open");
+    };
+
+    window.closeTokenModal = () => {
+      document.getElementById("tokenModal").classList.remove("open");
+    };
+
+    window.saveTokenSettings = () => {
+      saveGitHubConfig({
+        owner: document.getElementById("ghOwner").value.trim(),
+        repo: document.getElementById("ghRepo").value.trim(),
+        branch: document.getElementById("ghBranch").value.trim() || "main",
+        dataPath: document.getElementById("ghDataPath").value.trim() || "data",
+        token: document.getElementById("ghToken").value.trim(),
+        autoSyncOnAdminAction: document.getElementById("ghAutoSync").checked
+      });
+      document.getElementById("ghModalMsg").textContent = "Konfigurasi GitHub Access Token disimpan.";
+      updateTokenBadge();
+    };
+
+    window.pushAllNow = async () => {
+      saveTokenSettings();
+      const msgEl = document.getElementById("ghModalMsg");
+      msgEl.textContent = "Mengirim semua file JSON ke GitHub...";
+      try {
+        await pushAllDatabaseToGitHub("Full sync dari Panel Admin");
+        msgEl.textContent = "Berhasil commit semua file database ke GitHub!";
+      } catch (err) {
+        msgEl.textContent = "Gagal push: " + err.message;
+      }
+    };
+
+    window.pullFromGitHubNow = async () => {
+      try {
+        await pullDatabaseFromGitHub();
+        renderAll();
+        alert("Database berhasil ditarik dari repository GitHub.");
+      } catch (err) {
+        alert("Gagal pull dari GitHub: " + err.message);
+      }
+    };
+
+    window.scrollToSection = (id, btn) => {
+      document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    initLocalSeed();
+    renderAll();
+  </script>
+</body>
+</html>
