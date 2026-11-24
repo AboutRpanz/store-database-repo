@@ -1,6 +1,5 @@
 {
-  "updatedAt": "2026-11-24T09:34:00.000Z",
-  "reason": "Update pengaturan store",
+  "updatedAt": "2026-11-24T12:58:59.220Z",
   "products": [],
   "settings": {
     "storeName": "FIRZZ STURE",
@@ -18,9 +17,60 @@
     "showGroupStock": true,
     "showConsignment": true,
     "admins": [
-      { "id": 1, "name": "Nomor Admin Utama", "phone": "089681841452", "role": "ADMIN UTAMA" },
-      { "id": 2, "name": "Nomor Admin WhatsApp", "phone": "6289681841452", "role": "ADMIN WA" },
-      { "id": 3, "name": "Nomor Rekber Resmi", "phone": "089681841452", "role": "REKBER RESMI" }
+      {
+        "id": 1,
+        "name": "Nomor Admin Utama (08)",
+        "phone": "089681841452",
+        "role": "ADMIN UTAMA (08)"
+      },
+      {
+        "id": 2,
+        "name": "Nomor Admin WhatsApp (+62)",
+        "phone": "6289681841452",
+        "role": "ADMIN WA (62)"
+      },
+      {
+        "id": 3,
+        "name": "Nomor Rekber Resmi (08)",
+        "phone": "089681841452",
+        "role": "REKBER RESMI (08)"
+      }
+    ]
+  },
+  "store_meta": {
+    "storeName": "FIRZZ STURE",
+    "hqName": "Studio Firzz Sture Indonesia",
+    "txCount": "200+",
+    "satisfaction": "99.8%",
+    "warningText": "Admin resmi HANYA bertransaksi lewat kontak terverifikasi",
+    "mainAdminPhone": "089681841452",
+    "waAdminPhone": "6289681841452",
+    "rekberPhone": "089681841452",
+    "channelLink": "https://whatsapp.com/channel/0029VbCVXfTJ93wQ5p1uHv10",
+    "groupLink": "https://chat.whatsapp.com/DofluEtNBli2o5nJaDLqLw?s=cl&p=a&iam=2",
+    "themeMode": "gradient-dark-cyber",
+    "density": "comfortable",
+    "showGroupStock": true,
+    "showConsignment": true,
+    "admins": [
+      {
+        "id": 1,
+        "name": "Nomor Admin Utama (08)",
+        "phone": "089681841452",
+        "role": "ADMIN UTAMA (08)"
+      },
+      {
+        "id": 2,
+        "name": "Nomor Admin WhatsApp (+62)",
+        "phone": "6289681841452",
+        "role": "ADMIN WA (62)"
+      },
+      {
+        "id": 3,
+        "name": "Nomor Rekber Resmi (08)",
+        "phone": "089681841452",
+        "role": "REKBER RESMI (08)"
+      }
     ]
   },
   "users": [
@@ -34,5 +84,5 @@
     }
   ],
   "orders": [],
-  "consignments": []
+  "titip_jual": []
 }
