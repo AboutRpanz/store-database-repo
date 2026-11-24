@@ -1,23 +1,7 @@
 {
   "updatedAt": "2026-11-24T09:34:00.000Z",
   "reason": "Update pengaturan store",
-  "products": [
-    {
-      "id": 1732440000000,
-      "code": "RP-A1B2C",
-      "game": "Free Fire",
-      "status": "ready",
-      "title": "JUDUL SPEK AKUN",
-      "rank": "Mythic / Heroic",
-      "level": "70",
-      "bind": "Monsep / Google Aman",
-      "price": 450000,
-      "originalPrice": 750000,
-      "image": "https://...",
-      "images": ["https://..."],
-      "notes": "Detail spesifikasi akun"
-    }
-  ],
+  "products": [],
   "settings": {
     "storeName": "FIRZZ STURE",
     "hqName": "Studio Firzz Sture Indonesia",
