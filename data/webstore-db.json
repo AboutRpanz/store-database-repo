@@ -1,0 +1,54 @@
+{
+  "updatedAt": "2026-11-24T09:34:00.000Z",
+  "reason": "Update pengaturan store",
+  "products": [
+    {
+      "id": 1732440000000,
+      "code": "RP-A1B2C",
+      "game": "Free Fire",
+      "status": "ready",
+      "title": "JUDUL SPEK AKUN",
+      "rank": "Mythic / Heroic",
+      "level": "70",
+      "bind": "Monsep / Google Aman",
+      "price": 450000,
+      "originalPrice": 750000,
+      "image": "https://...",
+      "images": ["https://..."],
+      "notes": "Detail spesifikasi akun"
+    }
+  ],
+  "settings": {
+    "storeName": "FIRZZ STURE",
+    "hqName": "Studio Firzz Sture Indonesia",
+    "txCount": "200+",
+    "satisfaction": "99.8%",
+    "warningText": "Admin resmi HANYA bertransaksi lewat kontak terverifikasi",
+    "mainAdminPhone": "089681841452",
+    "waAdminPhone": "6289681841452",
+    "rekberPhone": "089681841452",
+    "channelLink": "https://whatsapp.com/channel/0029VbCVXfTJ93wQ5p1uHv10",
+    "groupLink": "https://chat.whatsapp.com/DofluEtNBli2o5nJaDLqLw?s=cl&p=a&iam=2",
+    "themeMode": "gradient-dark-cyber",
+    "density": "comfortable",
+    "showGroupStock": true,
+    "showConsignment": true,
+    "admins": [
+      { "id": 1, "name": "Nomor Admin Utama", "phone": "089681841452", "role": "ADMIN UTAMA" },
+      { "id": 2, "name": "Nomor Admin WhatsApp", "phone": "6289681841452", "role": "ADMIN WA" },
+      { "id": 3, "name": "Nomor Rekber Resmi", "phone": "089681841452", "role": "REKBER RESMI" }
+    ]
+  },
+  "users": [
+    {
+      "id": "ADMIN-FIRZZSTURE",
+      "name": "Admin Firzz Sture",
+      "username": "admin",
+      "email": "admin@firzzsture.com",
+      "password": "AdminFirzz0830#",
+      "role": "admin"
+    }
+  ],
+  "orders": [],
+  "consignments": []
+}
